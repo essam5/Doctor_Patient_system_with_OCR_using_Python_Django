@@ -105,6 +105,24 @@ def createaccountpage(request):
 
 # return render(request,'createaccount.html')
 
+
+#for put the image 
+def ocr_image_view(request): 
+  
+    if request.method == 'POST': 
+        form = OcrForm(request.POST, request.FILES) 
+  
+        if form.is_valid(): 
+            form.save() 
+            return redirect('success') 
+    else: 
+        form = OcrForm() 
+    return render(request, 'index.html', {'form' : form}) 
+  
+  
+def success(request): 
+    return HttpResponse('successfully uploaded') 
+
 def adminaddDoctor(request):
 	error = ""
 	user = "none"
