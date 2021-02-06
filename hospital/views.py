@@ -1,10 +1,41 @@
 from django.shortcuts import render ,redirect
 from .models import *
+#import for OCR 
+import io
+import json
+import cv2
+import numpy as np
+import requests
+
+#Django import
 from django.contrib.auth.models import User,Group
 from django.contrib.auth import authenticate,logout,login
 from django.http import HttpResponse
-from django.utils import timezone
+from django.utils import timezone 
 
+def ocr_image(img):
+	img = cv2.imread("screenshot.jpg")
+        height, width, _ = img.shape
+	# Cutting image
+        roi = img[0: height, 400: width]
+	
+	# Ocr
+        url_api = "https://api.ocr.space/parse/image"
+        _, compressedimage = cv2.imencode(".jpg", roi, [1, 90])
+        file_bytes = io.BytesIO(compressedimage)
+	
+	result = requests.post(url_api,
+              files = {"screenshot.jpg": file_bytes},
+              data = {"apikey": "YOURAPIKEYHERE",
+                      "language": "eng"})
+	
+	result = result.content.decode()
+        result = json.loads(result)
+	
+	parsed_results = result.get("ParsedResults")[0]
+        text_detected = parsed_results.get("ParsedText")
+	
+	return text_detected
 
 
 # Create your views here.
