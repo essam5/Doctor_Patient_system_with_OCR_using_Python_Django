@@ -28,6 +28,11 @@ class Receptionist(models.Model):
 
     def __str__(self):
         return self.name
+    
+#for OCR     
+ class OCR(models.Model): 
+    name = models.CharField(max_length=50) 
+    ocr_patient_Img = models.ImageField(upload_to='images/')     
 
 
 class Patient(models.Model):
